@@ -15,8 +15,8 @@
 import pandas as pd
 
 # Charger les datasets
-train_df = pd.read_csv("datasets/train.csv")  # Remplace par le chemin de ton fichier
-test_df = pd.read_csv("datasets/test.csv")    # Remplace par le chemin de ton fichier
+train_df = pd.read_csv("/work/datasets/train.csv")  # Remplace par le chemin de ton fichier
+test_df = pd.read_csv("/work/datasets/test.csv")    # Remplace par le chemin de ton fichier
 
 # 1. Afficher les cinq premières lignes
 print("Train dataset (5 premières lignes) :")

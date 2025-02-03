@@ -17,5 +17,8 @@ RUN ls -l /work/
 # Installer les dépendances
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Exécuter le notebook automatiquement à l'aide de nbconvert
-CMD jupyter nbconvert --to notebook --execute --inplace /work/clean_data.ipynb && tail -f /dev/null
+# Convertir le notebook en script Python
+RUN jupyter nbconvert --to script /work/clean_data.ipynb
+
+# Exécuter le script Python
+CMD ["python", "/work/clean_data.py"]
