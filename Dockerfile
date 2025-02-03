@@ -1,17 +1,21 @@
-# Utiliser l'image officielle de Python comme image de base
-FROM python:3.9-slim
+# Utiliser l'image officielle de Jupyter
+FROM jupyter/base-notebook:latest
 
-# Définir le répertoire de travail à l'intérieur du conteneur
-WORKDIR /app
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /work
+
+# Copier le notebook et les données dans le conteneur
+COPY /work/clean_data.ipynb /work/
+COPY /work/datasets /work/datasets
 
 # Copier le fichier requirements.txt dans le répertoire de travail
-COPY requirements.txt .
+COPY requirements.txt /tmp/
 
-# Installer les dépendances listées dans requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Vérifier que les fichiers sont bien copiés
+RUN ls -l /work/
 
-# Copier le script Python de nettoyage des données dans le conteneur
-COPY clean_data.py .
+# Installer les dépendances
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Définir la commande d'exécution par défaut (exécuter le script Python)
-CMD ["python", "clean_data.py"]
+# Exécuter le notebook automatiquement à l'aide de nbconvert
+CMD jupyter nbconvert --to notebook --execute --inplace /work/clean_data.ipynb && tail -f /dev/null
