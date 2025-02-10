@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE = 'votre-image-docker' // Nom de l'image Docker
+        REPO_URL = 'https://github.com/votre-utilisateur/votre-repo.git'
+    }
+    stages {
+        stage('Cloner le code') {
+            steps {
+                git branch: 'main', url: "${REPO_URL}"
+            }
+        }
+        stage('Télécharger les données') {
+            steps {
+                script {
+                    sh 'python scripts/download_data.py'
+                }
+            }
+        }
+        stage('Nettoyage des données') {
+            steps {
+                script {
+                    sh 'docker-compose run --rm data-cleaning' // Nettoyage des données dans un conteneur Docker
+                }
+            }
+        }
+        stage('Entraînement du modèle') {
+            steps {
+                script {
+                    sh 'python scripts/train_model.py' // Script pour entraîner le modèle
+                }
+            }
+        }
+        stage('Stocker les artefacts') {
+            steps {
+                script {
+                    sh 'docker cp model:/app/output/model.pkl ./models' // Stocke le modèle dans le répertoire de modèles
+                    sh 'docker cp model:/app/output/logs ./logs' // Stocke les logs d'entraînement
+                }
+            }
+        }
+    }
+}
